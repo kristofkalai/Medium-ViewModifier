@@ -9,22 +9,25 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Color.red
-                .applySize()
-
-            Color.green
-                .applySize()
-
-            Color.blue
-                .applySize()
-        }
+        SomeComplexView(title: "Title", details: "Details")
     }
 }
 
-extension View {
-    fileprivate func applySize() -> some View {
-        frame(width: 100, height: 100)
+struct SomeComplexView: View {
+    let title: String
+    let details: String
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.title)
+                .bold()
+                .padding()
+
+            Text(details)
+                .font(.callout)
+                .italic()
+        }
     }
 }
 
