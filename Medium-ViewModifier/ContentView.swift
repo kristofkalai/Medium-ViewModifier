@@ -9,13 +9,23 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        SomeComplexView(title: "Title", details: "Details")
+        VStack {
+            SomeComplexView(title: "Title", details: "Details")
+            SomeComplexView(title: "Title", details: "Details", hasBorder: true)
+        }
     }
 }
 
 struct SomeComplexView: View {
-    let title: String
-    let details: String
+    private let title: String
+    private let details: String
+    private let hasBorder: Bool
+
+    init(title: String, details: String, hasBorder: Bool = false) {
+        self.title = title
+        self.details = details
+        self.hasBorder = hasBorder
+    }
 
     var body: some View {
         HStack {
@@ -23,6 +33,7 @@ struct SomeComplexView: View {
                 .font(.title)
                 .bold()
                 .padding()
+                .border(hasBorder ? .blue : .clear, width: hasBorder ? 3 : 0)
 
             Text(details)
                 .font(.callout)
