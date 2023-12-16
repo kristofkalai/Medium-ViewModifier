@@ -8,16 +8,20 @@
 import SwiftUI
 
 struct ContentView: View {
+    private enum Constants {
+        static let size = 100.0
+    }
+
     var body: some View {
         VStack {
             Color.red
-                .frame(width: 100, height: 100)
+                .frame(width: Constants.size, height: Constants.size)
 
             Color.green
-                .frame(width: 100, height: 100)
+                .frame(width: Constants.size, height: Constants.size)
 
             Color.blue
-                .frame(width: 100, height: 100)
+                .frame(width: Constants.size, height: Constants.size)
         }
     }
 }
