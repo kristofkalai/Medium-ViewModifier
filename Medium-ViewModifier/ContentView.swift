@@ -8,57 +8,56 @@
 import SwiftUI
 
 struct ContentView: View {
+    enum Tab: String, CaseIterable {
+        case first
+        case second
+    }
+
+    @State private var selectedTab: Tab = .first
+
+    var body: some View {
+        SegmentedControl(
+            tabs: Tab.allCases,
+            selectedTab: $selectedTab,
+            title: \.rawValue
+        ) { tab in
+            switch tab {
+            case .first: Color.red
+            case .second: Color.blue
+            }
+        }
+    }
+}
+
+struct SegmentedControl<Tab: Hashable, Content: View>: View {
+    private let tabs: [Tab]
+    @Binding private var selectedTab: Tab
+    private let title: (Tab) -> String
+    @ViewBuilder private let content: (Tab) -> Content
+
+    init(
+        tabs: [Tab],
+        selectedTab: Binding<Tab>,
+        title: @escaping (Tab) -> String,
+        @ViewBuilder content: @escaping (Tab) -> Content
+    ) {
+        self.tabs = tabs
+        self._selectedTab = selectedTab
+        self.title = title
+        self.content = content
+    }
+
     var body: some View {
         VStack {
-            SomeComplexView(title: "Title", details: "Details")
-            SomeComplexView(title: "Title", details: "Details", titleModifier: .init())
-            SomeComplexView(title: "Title", details: "Details", titleModifier: .init(color: .red, width: 5))
+            Picker("", selection: $selectedTab) {
+                ForEach(tabs, id: \.self) { tab in
+                    Text(title(tab)).tag(tab)
+                }
+            }
+            .pickerStyle(.segmented)
+
+            content(selectedTab)
         }
-    }
-}
-
-struct SomeComplexView: View {
-    private let title: String
-    private let details: String
-    private let titleModifier: TitleViewModifier
-
-    init(title: String, details: String, titleModifier: TitleViewModifier = .empty) {
-        self.title = title
-        self.details = details
-        self.titleModifier = titleModifier
-    }
-
-    var body: some View {
-        HStack {
-            Text(title)
-                .font(.title)
-                .bold()
-                .padding()
-                .modifier(titleModifier)
-
-            Text(details)
-                .font(.callout)
-                .italic()
-        }
-    }
-}
-
-struct TitleViewModifier: ViewModifier {
-    private let color: Color
-    private let width: CGFloat
-
-    static var empty: Self {
-        .init(color: .clear, width: .zero)
-    }
-
-    init(color: Color = .blue, width: CGFloat = 3) {
-        self.color = color
-        self.width = width
-    }
-
-    func body(content: Content) -> some View {
-        content
-            .border(color, width: width)
     }
 }
 
