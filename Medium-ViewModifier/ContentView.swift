@@ -12,6 +12,7 @@ struct ContentView: View {
         VStack {
             SomeComplexView(title: "Title", details: "Details")
             SomeComplexView(title: "Title", details: "Details", titleModifier: SomeComplexViewTitleModifier())
+            SomeComplexView(title: "Title", details: "Details", titleModifier: SomeComplexViewTitleModifier(extraPadding: true))
         }
     }
 }
@@ -45,9 +46,20 @@ extension SomeComplexView where TitleModifier == EmptyModifier {
 }
 
 struct SomeComplexViewTitleModifier: ViewModifier {
+    private let color: Color
+    private let width: CGFloat
+    private let extraPadding: Bool
+
+    init(color: Color = .blue, width: CGFloat = 3, extraPadding: Bool = false) {
+        self.color = color
+        self.width = width
+        self.extraPadding = extraPadding
+    }
+
     func body(content: Content) -> some View {
         content
-            .border(.blue, width: 3)
+            .border(color, width: width)
+            .padding(extraPadding ? 16 : 0)
     }
 }
 
