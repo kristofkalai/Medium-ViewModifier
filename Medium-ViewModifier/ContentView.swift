@@ -11,38 +11,39 @@ struct ContentView: View {
     var body: some View {
         VStack {
             SomeComplexView(title: "Title", details: "Details")
-            SomeComplexView(title: "Title", details: "Details", hasBorder: true)
-            SomeComplexView(title: "Title", details: "Details", hasBorder: true, hasThickBorder: true)
+            SomeComplexView(title: "Title", details: "Details") {
+                AnyView($0.border(.blue, width: 3))
+            }
         }
     }
 }
 
-struct SomeComplexView: View {
-    private let title: String
-    private let details: String
-    private let hasBorder: Bool
-    private let hasThickBorder: Bool
-
-    init(title: String, details: String, hasBorder: Bool = false, hasThickBorder: Bool = false) {
-        self.title = title
-        self.details = details
-        self.hasBorder = hasBorder
-        self.hasThickBorder = hasThickBorder
-    }
+struct SomeComplexView<ModifiedView: View>: View {
+    let title: String
+    let details: String
+    let customization: (any View) -> ModifiedView
 
     var body: some View {
         HStack {
-            Text(title)
-                .font(.title)
-                .bold()
-                .padding()
-                .border(hasBorder ? .blue : .clear, // or: hasBorder || hasThickBorder ? .blue : .clear
-                        width: hasThickBorder ? 5 : (hasBorder ? 3 : 0))
+            customization(
+                Text(title)
+                    .font(.title)
+                    .bold()
+                    .padding()
+            )
 
             Text(details)
                 .font(.callout)
                 .italic()
         }
+    }
+}
+
+extension SomeComplexView where ModifiedView == AnyView {
+    init(title: String, details: String) {
+        self.title = title
+        self.details = details
+        self.customization = { AnyView($0) }
     }
 }
 
