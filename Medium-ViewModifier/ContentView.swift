@@ -11,16 +11,22 @@ struct ContentView: View {
     var body: some View {
         VStack {
             SomeComplexView(title: "Title", details: "Details")
-            SomeComplexView(title: "Title", details: "Details", titleModifier: SomeComplexViewTitleModifier())
-            SomeComplexView(title: "Title", details: "Details", titleModifier: SomeComplexViewTitleModifier(extraPadding: true))
+            SomeComplexView(title: "Title", details: "Details", titleModifier: .init())
+            SomeComplexView(title: "Title", details: "Details", titleModifier: .init(color: .red, width: 5))
         }
     }
 }
 
-struct SomeComplexView<TitleModifier: ViewModifier>: View {
-    let title: String
-    let details: String
-    let titleModifier: TitleModifier
+struct SomeComplexView: View {
+    private let title: String
+    private let details: String
+    private let titleModifier: TitleViewModifier
+
+    init(title: String, details: String, titleModifier: TitleViewModifier = .empty) {
+        self.title = title
+        self.details = details
+        self.titleModifier = titleModifier
+    }
 
     var body: some View {
         HStack {
@@ -37,29 +43,22 @@ struct SomeComplexView<TitleModifier: ViewModifier>: View {
     }
 }
 
-extension SomeComplexView where TitleModifier == EmptyModifier {
-    init(title: String, details: String) {
-        self.title = title
-        self.details = details
-        self.titleModifier = EmptyModifier()
-    }
-}
-
-struct SomeComplexViewTitleModifier: ViewModifier {
+struct TitleViewModifier: ViewModifier {
     private let color: Color
     private let width: CGFloat
-    private let extraPadding: Bool
 
-    init(color: Color = .blue, width: CGFloat = 3, extraPadding: Bool = false) {
+    static var empty: Self {
+        .init(color: .clear, width: .zero)
+    }
+
+    init(color: Color = .blue, width: CGFloat = 3) {
         self.color = color
         self.width = width
-        self.extraPadding = extraPadding
     }
 
     func body(content: Content) -> some View {
         content
             .border(color, width: width)
-            .padding(extraPadding ? 16 : 0)
     }
 }
 
