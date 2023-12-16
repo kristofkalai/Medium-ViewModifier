@@ -7,6 +7,21 @@
 
 import SwiftUI
 
+struct ContentView: View {
+    var body: some View {
+        VStack {
+            Color.red
+                .applySize()
+
+            Color.green
+                .applySize()
+
+            Color.blue
+                .applySize()
+        }
+    }
+}
+
 private struct SizeModifier: ViewModifier {
     private enum Constants {
         static let size = 100.0
@@ -18,18 +33,9 @@ private struct SizeModifier: ViewModifier {
     }
 }
 
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Color.red
-                .modifier(SizeModifier())
-
-            Color.green
-                .modifier(SizeModifier())
-
-            Color.blue
-                .modifier(SizeModifier())
-        }
+extension View {
+    fileprivate func applySize() -> some View {
+        modifier(SizeModifier())
     }
 }
 
