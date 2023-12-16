@@ -22,20 +22,9 @@ struct ContentView: View {
     }
 }
 
-private struct SizeModifier: ViewModifier {
-    private enum Constants {
-        static let size = 100.0
-    }
-
-    func body(content: Content) -> some View {
-        content
-            .frame(width: Constants.size, height: Constants.size)
-    }
-}
-
 extension View {
     fileprivate func applySize() -> some View {
-        modifier(SizeModifier())
+        frame(width: 100, height: 100)
     }
 }
 
