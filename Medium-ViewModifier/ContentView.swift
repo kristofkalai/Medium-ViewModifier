@@ -12,6 +12,7 @@ struct ContentView: View {
         VStack {
             SomeComplexView(title: "Title", details: "Details")
             SomeComplexView(title: "Title", details: "Details", hasBorder: true)
+            SomeComplexView(title: "Title", details: "Details", hasBorder: true, hasThickBorder: true)
         }
     }
 }
@@ -20,11 +21,13 @@ struct SomeComplexView: View {
     private let title: String
     private let details: String
     private let hasBorder: Bool
+    private let hasThickBorder: Bool
 
-    init(title: String, details: String, hasBorder: Bool = false) {
+    init(title: String, details: String, hasBorder: Bool = false, hasThickBorder: Bool = false) {
         self.title = title
         self.details = details
         self.hasBorder = hasBorder
+        self.hasThickBorder = hasThickBorder
     }
 
     var body: some View {
@@ -33,7 +36,8 @@ struct SomeComplexView: View {
                 .font(.title)
                 .bold()
                 .padding()
-                .border(hasBorder ? .blue : .clear, width: hasBorder ? 3 : 0)
+                .border(hasBorder ? .blue : .clear, // or: hasBorder || hasThickBorder ? .blue : .clear
+                        width: hasThickBorder ? 5 : (hasBorder ? 3 : 0))
 
             Text(details)
                 .font(.callout)
