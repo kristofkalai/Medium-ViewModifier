@@ -11,26 +11,23 @@ struct ContentView: View {
     var body: some View {
         VStack {
             SomeComplexView(title: "Title", details: "Details")
-            SomeComplexView(title: "Title", details: "Details") {
-                AnyView($0.border(.blue, width: 3))
-            }
+            SomeComplexView(title: "Title", details: "Details", titleModifier: SomeComplexViewTitleModifier())
         }
     }
 }
 
-struct SomeComplexView<ModifiedView: View>: View {
+struct SomeComplexView<TitleModifier: ViewModifier>: View {
     let title: String
     let details: String
-    let customization: (any View) -> ModifiedView
+    let titleModifier: TitleModifier
 
     var body: some View {
         HStack {
-            customization(
-                Text(title)
-                    .font(.title)
-                    .bold()
-                    .padding()
-            )
+            Text(title)
+                .font(.title)
+                .bold()
+                .padding()
+                .modifier(titleModifier)
 
             Text(details)
                 .font(.callout)
@@ -39,11 +36,18 @@ struct SomeComplexView<ModifiedView: View>: View {
     }
 }
 
-extension SomeComplexView where ModifiedView == AnyView {
+extension SomeComplexView where TitleModifier == EmptyModifier {
     init(title: String, details: String) {
         self.title = title
         self.details = details
-        self.customization = { AnyView($0) }
+        self.titleModifier = EmptyModifier()
+    }
+}
+
+struct SomeComplexViewTitleModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .border(.blue, width: 3)
     }
 }
 
